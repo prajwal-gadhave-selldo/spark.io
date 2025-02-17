@@ -49,6 +49,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_17_065828) do
     t.string "role", default: "user", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "blogs", "users"
