@@ -1,6 +1,5 @@
 class User < ApplicationRecord
-
-  has_secure_password # by bcrypt 
+  has_secure_password # by bcrypt
 
   # validations
   validates :name, presence: true
@@ -15,11 +14,11 @@ class User < ApplicationRecord
       exp: 24.hours.from_now.to_i
     }, "tempjwtsalt") # Rails.application.credentials.secret_key_base
   end
-  
+
   # associations
   has_many :blogs
   has_many :comments
   has_many :likes
-  
+
   # callbacks
 end

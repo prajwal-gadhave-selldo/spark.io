@@ -1,8 +1,7 @@
 class Blog < ApplicationRecord
-
   # Validations
   validates :title, :content, :user_id, presence: true
-  
+
 
   # Associations
   belongs_to :user

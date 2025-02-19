@@ -1,5 +1,4 @@
 class Comment < ApplicationRecord
-
   # Validations
   validates :content, :user_id, :blog_id, presence: true
 
