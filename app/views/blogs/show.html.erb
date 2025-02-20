@@ -1,0 +1,72 @@
+<div class="container mt-4">
+  <div class="card mb-4">
+    <div class="card-body">
+      <h1 class="card-title"><%= @blog.title %></h1>
+      <% if @blog.user == @current_user %>
+      <div class="btn-group mb-3">
+        <%= link_to 'Edit', edit_blog_path(@blog), class: 'btn btn-outline-primary' %>
+        <%= button_to 'Delete', blog_path(@blog), 
+          method: :delete, 
+          data: { confirm: 'Are you sure?' }, 
+          class: 'btn btn-outline-danger' %>
+      </div>
+      <% end %>
+      <h6 class="card-subtitle mb-3 text-muted">
+        By <%= @blog.user.name %> •
+        Posted <%= time_ago_in_words(@blog.created_at) %> ago
+      </h6>
+
+      <p class="card-text"><%= simple_format(@blog.content) %></p>
+
+      <div class="d-flex gap-2">
+        <% if @current_user %>
+        <% if @blog.liked_by?(@current_user) %>
+        <%= button_to like_path(@blog.likes.find_by(user: @current_user)), 
+                method: :delete, 
+                class: 'btn btn-danger' do %>
+        Unlike (<%= @blog.likes.count %>)
+        <% end %>
+        <% else %>
+        <%= button_to blog_likes_path(@blog), 
+                class: 'btn btn-outline-danger' do %>
+        Like (<%= @blog.likes.count %>)
+        <% end %>
+        <% end %>
+        <% else %>
+        <span class="btn btn-outline-danger disabled">
+          Likes (<%= @blog.likes.count %>)
+        </span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h4 class="card-title mb-4">Comments</h4>
+
+      <% if @current_user %>
+      <%= form_with(model: [@blog, @comment], local: true, class: 'mb-4') do |f| %>
+      <div class="mb-3">
+        <%= f.text_area :content, class: 'form-control', rows: 3, placeholder: 'Add a comment...' %>
+      </div>
+      <%= f.submit 'Post Comment', class: 'btn btn-primary' %>
+      <% end %>
+      <% end %>
+
+      <div class="comments-list">
+        <% @comments.each do |comment| %>
+        <div class="card mb-3">
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">
+              <%= comment.user.name %> •
+              <%= time_ago_in_words(comment.created_at) %> ago
+            </h6>
+            <p class="card-text"><%= comment.content %></p>
+          </div>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

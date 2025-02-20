@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Your App</title>
+  <title>Spark.io</title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
@@ -16,13 +16,17 @@
     <div class="container">
       <div class="d-flex justify-content-between w-100">
         <div class="navbar-brand">
-          <span class="fs-4 fw-semibold">Your App</span>
+          <%= link_to root_path, class: 'fs-4 fw-semibold text-black text-decoration-none' do %>
+          <span>Spark.io</span>
+          <% end %>
         </div>
         <div class="d-flex align-items-center">
-          <% if @current_user %>
+          <% if @current_user.class != String %>
           <span class="me-3"><%= @current_user.name %></span>
           <%= button_to 'Logout', logout_path, method: :delete, 
                 class: 'btn btn-danger' %>
+          <% else %>
+          <%= link_to 'Login', login_path, class: 'btn btn-primary me-2' %>
           <% end %>
         </div>
       </div>
