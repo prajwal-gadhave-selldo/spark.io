@@ -1,14 +1,14 @@
 class LikesController < ApplicationController
   before_action :authenticate_user
-  
+
   def create
     @blog = Blog.find(params[:blog_id])
     @like = current_user.likes.build(blog: @blog)
 
     if @like.save
-      redirect_to @blog, notice: 'Blog liked!'
+      redirect_to @blog, notice: "Blog liked!"
     else
-      redirect_to @blog, alert: 'Error liking blog.'
+      redirect_to @blog, alert: "Error liking blog."
     end
   end
 
@@ -17,6 +17,6 @@ class LikesController < ApplicationController
     @blog = @like.blog
     @like.destroy
 
-    redirect_to @blog, notice: 'Blog unliked!'
+    redirect_to @blog, notice: "Blog unliked!"
   end
 end
