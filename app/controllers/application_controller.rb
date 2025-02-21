@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
       # head :unauthorized
       # redirect_to login_path unless request.original_fullpath == login_path or request.original_fullpath == signup_path
       redirect_to login_path unless [login_path, signup_path].include?(request.original_fullpath)
-
+    end
   end
 
   def current_user

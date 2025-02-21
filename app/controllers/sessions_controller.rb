@@ -1,8 +1,8 @@
 class SessionsController < ApplicationController
   layout "auth"
 
-  before_action :logged_in, except: [:destroy]
-  
+  before_action :logged_in, except: [ :destroy ]
+
   def new
   end
 
