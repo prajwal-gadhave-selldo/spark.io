@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_user, except: [ :create, :new ]
+  before_action :logged_in, only: [ :new, :create ]
 
   def new
    @user = User.new
@@ -7,9 +8,9 @@ class UsersController < ApplicationController
   end
 
   def create
-    user = User.new(user_params)
-    if user.save
-      token = user.generate_jwt
+    @user = User.new(user_params)
+    if @user.save
+      token = @user.generate_jwt
       cookies.signed[:jwt] = {
         value: token,
         httponly: true,
