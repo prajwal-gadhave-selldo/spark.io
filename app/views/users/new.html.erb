@@ -1,6 +1,6 @@
 <h2 class="text-center fw-bold mb-4">Sign Up</h2>
 
-<%= form_with(model: @user, url: signup_path, class: "needs-validation", novalidate: true) do |f| %>
+<%= form_with(model: @user, url: signup_path, data: { turbo: false }, class: "needs-validation", novalidate: true) do |f| %>
 <% if @user.errors.any? %>
 <div class="alert alert-danger">
   <ul class="mb-0">

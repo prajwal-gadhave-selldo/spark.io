@@ -1,11 +1,12 @@
 class SessionsController < ApplicationController
-  layout 'auth'
+  layout "auth"
 
+  before_action :logged_in, except: [:destroy]
+  
   def new
   end
 
   def create
-    
     user = User.find_by(email: params[:email])
 
     if user&.authenticate(params[:password])
@@ -17,10 +18,10 @@ class SessionsController < ApplicationController
         expires: 24.hours.from_now
       }
       # render json: { user: { id: user.id, email: user.email, name: user.name, token: token } }
-      redirect_to dashboard_path, notice: 'Successfully logged in!'
+      redirect_to dashboard_path, notice: "Successfully logged in!"
     else
       # render json: { error: "Invalid email or password" }, status: :unauthorized
-      flash.now[:alert] = 'Invalid email or password'
+      flash.now[:alert] = "Invalid email or password"
       render :new, status: :unprocessable_entity
     end
   end
@@ -28,6 +29,6 @@ class SessionsController < ApplicationController
   def destroy
     cookies.delete(:jwt)
     # head :no_content
-    redirect_to login_path, notice: 'Successfully logged out!'
+    redirect_to login_path, notice: "Successfully logged out!"
   end
 end

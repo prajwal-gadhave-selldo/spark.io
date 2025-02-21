@@ -1,4 +1,30 @@
 <div class="bg-white rounded shadow-sm p-4">
-  <h1 class="fs-4 fw-bold mb-3">Welcome, <%= @current_user.name %>!</h1>
+  <h1 class="fs-4 fw-bold mb-3">Welcome, <%= @current_user&.name %>!</h1>
   <p class="text-muted">You're successfully logged in.</p>
+</div>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Blogs</h1>
+    <% if @current_user %>
+    <%= link_to 'Create New Blog', new_blog_path, class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+
+  <div class="row">
+    <% @blogs.each do |blog| %>
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title"><%= blog.title %></h5>
+          <h6 class="card-subtitle mb-2 text-muted">By <%= blog.user.name %></h6>
+          <p class="card-text"><%= truncate(blog.content, length: 150) %></p>
+          <%= link_to 'Read More', blog_path(blog), class: 'btn btn-outline-primary' %>
+        </div>
+        <div class="card-footer text-muted">
+          Posted <%= time_ago_in_words(blog.created_at) %> ago
+        </div>
+      </div>
+    </div>
+    <% end %>
+  </div>
 </div>
