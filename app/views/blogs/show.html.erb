@@ -28,7 +28,7 @@
         <% end %>
         <% else %>
         <%= button_to blog_likes_path(@blog), 
-                class: 'btn btn-outline-danger' do %>
+        class: 'btn btn-outline-danger' do %>
         Like (<%= @blog.likes.count %>)
         <% end %>
         <% end %>

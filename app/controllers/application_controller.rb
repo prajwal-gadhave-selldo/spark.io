@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
     rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
       # head :unauthorized
       # redirect_to login_path unless request.original_fullpath == login_path or request.original_fullpath == signup_path
-      redirect_to login_path unless [login_path, signup_path].include?(request.original_fullpath)
+      redirect_to login_path unless [ login_path, signup_path ].include?(request.original_fullpath)
     end
   end
 
@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
     @current_user ||= authenticate_user
   end
 
-  def logged_in   
+  def logged_in
     redirect_to root_path if current_user.present?
   end
 end
