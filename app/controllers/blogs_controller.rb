@@ -53,7 +53,12 @@ class BlogsController < ApplicationController
   end
 
   def set_blog
+    begin
     @blog = Blog.find(params[:id])
+    rescue ActiveRecord::RecordNotFound => e
+      redirect_to root_path, alert: "Blog not found."
+    end
+
   end
 
   def ensure_owner
