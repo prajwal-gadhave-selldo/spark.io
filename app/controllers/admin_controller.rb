@@ -1,11 +1,10 @@
 class AdminController < ApplicationController
   before_action :authenticate_user
   before_action :authorize_admin
-  before_action :set_user, only: [:show_user, :edit_user, :update_user, :user_activity]
-  layout 'admin'
+  before_action :set_user, only: [ :show_user, :edit_user, :update_user, :user_activity ]
+  layout "admin"
 
   def users
-    
     @users = User.all.order(created_at: :desc)
   end
 
@@ -17,7 +16,7 @@ class AdminController < ApplicationController
 
   def update_user
     if @user.update(user_params)
-      redirect_to admin_user_path(@user), notice: 'User was successfully updated.'
+      redirect_to admin_user_path(@user), notice: "User was successfully updated."
     else
       render :edit_user, status: :unprocessable_entity
     end
@@ -40,7 +39,6 @@ class AdminController < ApplicationController
   end
 
   def authorize_admin
-    
     unless current_user&.role == "admin"
       redirect_to root_path, alert: "You are not authorized to access this area."
     end

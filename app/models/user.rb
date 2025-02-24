@@ -21,4 +21,15 @@ class User < ApplicationRecord
   has_many :likes
 
   # callbacks
+  def total_blogs
+    blogs.count
+  end
+
+  def total_comments
+    comments.count
+  end
+
+  def total_likes
+    likes.count
+  end
 end

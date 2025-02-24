@@ -1,0 +1,55 @@
+<div class="container-fluid">
+  <h2 class="mb-4">Activity for <%= @user.name %></h2>
+
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a class="nav-link active" data-bs-toggle="tab" href="#blogs">Blogs (<%= @blogs.count %>)</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#comments">Comments (<%= @comments.count %>)</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#likes">Likes (<%= @likes.count %>)</a>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="blogs">
+      <div class="list-group">
+        <% @blogs.each do |blog| %>
+        <div class="list-group-item">
+          <h4 class="mb-1"><%= link_to blog.title, blog_path(blog) %></h4>
+          <small class="text-muted">Posted <%= time_ago_in_words(blog.created_at) %> ago</small>
+          <p class="mb-1"><%= truncate(blog.content, length: 150) %></p>
+        </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="comments">
+      <div class="list-group">
+        <% @comments.each do |comment| %>
+        <div class="list-group-item">
+          <small class="text-muted">On blog: <%= link_to comment.blog.title, blog_path(comment.blog) %></small>
+          <p class="mb-1"><%= comment.content %></p>
+          <small class="text-muted"><%= time_ago_in_words(comment.created_at) %> ago</small>
+        </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="likes">
+      <div class="list-group">
+        <% @likes.each do |like| %>
+        <div class="list-group-item">
+          <p class="mb-1">Liked: <%= link_to like.blog.title, blog_path(like.blog) %></p>
+          <small class="text-muted"><%= time_ago_in_words(like.created_at) %> ago</small>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <%= link_to 'Back to User', admin_user_path(@user), class: 'btn btn-outline-secondary' %>
+  </div>
+</div>
