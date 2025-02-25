@@ -14,7 +14,8 @@
           <h5 class="card-title"><%= blog.title %></h5>
           <h6 class="card-subtitle mb-2 text-muted">By <%= blog.user.name %></h6>
           <p class="card-text"><%= truncate(blog.content, length: 150) %></p>
-          <%= link_to 'Read More', blog_path(blog), class: 'btn btn-outline-primary' %>
+          <%= link_to 'Edit', edit_blog_path(blog), class: 'btn btn-outline-primary me-2' %>
+          <%= link_to 'Read More', blog_path(blog), class: 'btn btn-outline-info' %>
         </div>
         <div class="card-footer text-muted">
           Posted <%= time_ago_in_words(blog.created_at) %> ago
