@@ -1,3 +1,5 @@
+<%
+=begin%>
 <div class="row mb-4">
   <div class="col-md-6">
     <h4 class="mb-0">Users Management</h4>
@@ -17,6 +19,81 @@
         <i class="bi bi-download me-1"></i>Export
       </button>
     </div>
+  </div>
+</div>
+<%
+=end%>
+<div class="row mb-4">
+  <div class="col-md-6">
+    <h4 class="mb-0">Users Management</h4>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><%= link_to 'Dashboard', admin_users_path %></li>
+        <li class="breadcrumb-item active">Users</li>
+      </ol>
+    </nav>
+  </div>
+  <div class="col-md-6 text-md-end">
+    <div class="btn-group">
+      <button type="button" class="btn btn-light" id="filterToggleBtn">
+        <i class="bi bi-funnel me-1"></i>Filter
+      </button>
+      <%= link_to admin_users_path(format: :csv, name: params[:name], email: params[:email], 
+                             role: params[:role], status: params[:status], 
+                             joined: params[:joined], search: params[:search]),
+            class: 'btn btn-light' do %>
+      <i class="bi bi-download me-1"></i>Export
+      <% end %>
+    </div>
+  </div>
+</div>
+
+
+<div class="card border-0 shadow-sm mb-4" id="filterCard" style="display: none;">
+  <div class="card-header bg-white">
+    <h6 class="mb-0">Filter Users</h6>
+  </div>
+  <div class="card-body">
+    <%= form_with url: admin_users_path, method: :get, id: "users-filter-form" do |form| %>
+    <div class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Name</label>
+        <%= form.text_field :name, value: params[:name], class: "form-control", placeholder: "Search by name" %>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Email</label>
+        <%= form.text_field :email, value: params[:email], class: "form-control", placeholder: "Search by email" %>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Role</label>
+        <%= form.select :role, [["All Roles", ""], ["Admin", "admin"], ["User", "user"]], 
+                          { selected: params[:role] }, 
+                          { class: "form-select" } %>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Status</label>
+        <%= form.select :status, [["All Status", ""], ["Active", "active"], ["Inactive", "inactive"]], 
+                          { selected: params[:status] }, 
+                          { class: "form-select" } %>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Joined</label>
+        <%= form.select :joined, [
+                            ["All Time", ""], 
+                            ["Last 7 Days", "7_days"], 
+                            ["Last Month", "month"], 
+                            ["Last 3 Months", "3_months"],
+                            ["Last Year", "year"]
+                          ], 
+                          { selected: params[:joined] }, 
+                          { class: "form-select" } %>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end mt-3">
+      <%= link_to "Clear All", admin_users_path, class: "btn btn-link me-2" %>
+      <%= form.submit "Apply Filters", class: "btn btn-primary" %>
+    </div>
+    <% end %>
   </div>
 </div>
 
@@ -84,13 +161,37 @@
 </div>
 
 <div class="card border-0 shadow-sm">
-  <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+
+  <%
+=begin%>
+ <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
     <h5 class="mb-0">All Users</h5>
     <div class="input-group" style="width: 280px;">
       <span class="input-group-text bg-white border-end-0">
         <i class="bi bi-search"></i>
       </span>
       <input type="text" class="form-control border-start-0" placeholder="Search users...">
+    </div>
+  </div> 
+<%
+=end%>
+
+  <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">All Users</h5>
+    <div class="input-group" style="width: 280px;">
+      <%= form_with url: admin_users_path, method: :get, id: "search-form", class: "d-flex w-100" do |form| %>
+      <span class="input-group-text bg-white border-end-0">
+        <i class="bi bi-search"></i>
+      </span>
+      <%= form.text_field :search, value: params[:search], class: "form-control border-start-0", placeholder: "Search users..." %>
+      <% if params[:name].present? || params[:email].present? || params[:role].present? || params[:status].present? || params[:joined].present? %>
+      <%= form.hidden_field :name, value: params[:name] %>
+      <%= form.hidden_field :email, value: params[:email] %>
+      <%= form.hidden_field :role, value: params[:role] %>
+      <%= form.hidden_field :status, value: params[:status] %>
+      <%= form.hidden_field :joined, value: params[:joined] %>
+      <% end %>
+      <% end %>
     </div>
   </div>
   <div class="card-body p-0">
@@ -170,3 +271,35 @@
     </nav>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterToggleBtn = document.getElementById('filterToggleBtn');
+    const filterCard = document.getElementById('filterCard');
+
+    // Show filter form if any filter is applied
+     <% if params[:name].present? || params[:email].present? || params[:role].present? || params[:status].present? || params[:joined].present? %>
+      filterCard.style.display = 'block';
+    <% end %>
+
+      filterToggleBtn.addEventListener('click', function() {
+        if (filterCard.style.display === 'none') {
+          filterCard.style.display = 'block';
+        } else {
+          filterCard.style.display = 'none';
+        }
+      });
+
+    // Auto-submit search form on keyup after a delay
+    const searchInput = document.querySelector('#search-form input[name="search"]');
+    if (searchInput) {
+      let timeout = null;
+      searchInput.addEventListener('keyup', function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+          document.getElementById('search-form').submit();
+        }, 1000);
+      });
+    }
+  });
+</script>
