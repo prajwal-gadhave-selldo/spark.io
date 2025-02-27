@@ -24,12 +24,20 @@ Rails.application.routes.draw do
   end
   resources :likes, only: [ :destroy ]
 
- # for admins
- get "admin/users", to: "admin#users", as: "admin_users"
- get "admin/users/:id", to: "admin#show_user", as: "admin_user"
- get "admin/users/:id/edit", to: "admin#edit_user", as: "edit_admin_user"
- patch "admin/users/:id", to: "admin#update_user"
- get "admin/users/:id/activity", to: "admin#user_activity", as: "admin_user_activity"
+  # for admins
+  get "admin/users", to: "admin#users", as: "admin_users"
+  get "admin/users/:id", to: "admin#show_user", as: "admin_user"
+  get "admin/users/:id/edit", to: "admin#edit_user", as: "edit_admin_user"
+  patch "admin/users/:id", to: "admin#update_user"
+  get "admin/users/:id/activity", to: "admin#user_activity", as: "admin_user_activity"
+
+  get "admin/blogs", to: "admin#blogs", as: "admin_blogs"
+  get "admin/blogs/new", to: "admin#new_blog", as: "new_admin_blog"
+  post "admin/blogs", to: "admin#create_blog"
+  get "admin/blogs/:id", to: "admin#show_blog", as: "admin_blog"
+  get "admin/blogs/:id/edit", to: "admin#edit_blog", as: "edit_admin_blog"
+  patch "admin/blogs/:id", to: "admin#update_blog"
+  delete "admin/blogs/:id", to: "admin#destroy_blog"
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest

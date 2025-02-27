@@ -16,7 +16,7 @@ module SparkIo
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
     config.hosts << "e1e9-219-91-158-194.ngrok-free.app"
-    config.hosts << "5327-219-91-158-194.ngrok-free.app"
+    config.hosts << "a8ec-219-91-158-194.ngrok-free.app"
 
     # Configuration for the application, engines, and railties goes here.
     #
