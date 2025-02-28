@@ -7,6 +7,110 @@ class AdminController < ApplicationController
   before_action :set_blog, only: [:show_blog, :edit_blog, :update_blog, :destroy_blog]
   layout "admin"
 
+  # Dashboard action
+  def dashboard
+    # Get counts for the dashboard cards
+    @total_users = User.count
+    @total_blogs = Blog.count
+    @total_comments = Comment.count
+    @total_likes = Like.count
+    
+    # Get new users in the last 30 days
+    @new_users_count = User.where("created_at >= ?", 30.days.ago).count
+    
+    # Get data for user growth chart (last 12 months)
+    @user_growth_data = 12.downto(0).map do |i|
+      month = i.months.ago.beginning_of_month
+      {
+        month: month.strftime("%b %Y"),
+        count: User.where("created_at <= ? AND created_at >= ?", month.end_of_month, month).count
+      }
+    end
+    
+    # Get data for content creation chart (last 12 months)
+    @content_data = 12.downto(0).map do |i|
+      month = i.months.ago.beginning_of_month
+      {
+        month: month.strftime("%b %Y"),
+        blogs: Blog.where("created_at <= ? AND created_at >= ?", month.end_of_month, month).count,
+        comments: Comment.where("created_at <= ? AND created_at >= ?", month.end_of_month, month).count
+      }
+    end
+    
+    # Get latest user registrations
+    @latest_users = User.order(created_at: :desc).limit(5)
+    
+    # Get latest blogs
+    @latest_blogs = Blog.includes(:user).order(created_at: :desc).limit(5)
+  end
+  
+  # Activity action
+  def activity
+    # Date range for the activity
+    @date_range = params[:range] || "30_days"
+    
+    case @date_range
+    when "7_days"
+      @start_date = 7.days.ago
+    when "30_days"
+      @start_date = 30.days.ago
+    when "90_days"
+      @start_date = 90.days.ago
+    when "year"
+      @start_date = 1.year.ago
+    else
+      @start_date = 30.days.ago
+    end
+    
+    # Daily activity counts
+    @daily_data = (@start_date.to_date..Date.today).map do |date|
+      next_date = date + 1.day
+      {
+        date: date.strftime("%b %d"),
+        users: User.where("created_at >= ? AND created_at < ?", date.beginning_of_day, next_date.beginning_of_day).count,
+        blogs: Blog.where("created_at >= ? AND created_at < ?", date.beginning_of_day, next_date.beginning_of_day).count,
+        comments: Comment.where("created_at >= ? AND created_at < ?", date.beginning_of_day, next_date.beginning_of_day).count,
+        likes: Like.where("created_at >= ? AND created_at < ?", date.beginning_of_day, next_date.beginning_of_day).count
+      }
+    end
+    
+    # Most active users
+    @active_users = User
+    .left_joins(:blogs, :comments, :likes)
+    .where(
+      "blogs.created_at >= :start_date OR 
+       comments.created_at >= :start_date OR 
+       likes.created_at >= :start_date OR 
+       users.created_at >= :start_date", 
+      start_date: @start_date
+    )
+    .select(
+      "users.id, 
+       users.name, 
+       users.email, 
+       COUNT(DISTINCT blogs.id) as blog_count, 
+       COUNT(DISTINCT comments.id) as comment_count, 
+       COUNT(DISTINCT likes.id) as like_count"
+    )
+    .group(:id, :name, :email)
+    .order(Arel.sql("(COUNT(DISTINCT blogs.id) + COUNT(DISTINCT comments.id) + COUNT(DISTINCT likes.id)) DESC"))
+    .limit(10)
+
+    @popular_blogs = Blog
+    .left_joins(:comments, :likes)
+    .select(
+      "blogs.id, 
+      blogs.title, 
+      blogs.created_at, 
+      COUNT(DISTINCT comments.id) as comment_count, 
+      COUNT(DISTINCT likes.id) as like_count"
+    )
+    .where("blogs.created_at >= ?", @start_date)
+    .group(:id, :title, :created_at)
+    .order(Arel.sql("(COUNT(DISTINCT comments.id) + COUNT(DISTINCT likes.id)) DESC"))
+    .limit(5)
+  end
+
   # Users actions
   def users
     @users = User.all.order(created_at: :desc)
