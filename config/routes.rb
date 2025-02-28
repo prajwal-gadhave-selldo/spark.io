@@ -39,6 +39,10 @@ Rails.application.routes.draw do
   patch "admin/blogs/:id", to: "admin#update_blog"
   delete "admin/blogs/:id", to: "admin#destroy_blog"
 
+  # Add these routes to your routes.rb
+  get "admin/dashboard", to: "admin#dashboard", as: "admin_dashboard"
+  get "admin/activity", to: "admin#activity", as: "admin_activity"
+
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker

@@ -74,40 +74,20 @@
             <small class="text-muted">Here's what's happening</small>
           </div>
         </div>
-
-        <%
-=begin%>
- <div class="mb-4">
+        <div class="mb-4">
           <small class="text-uppercase text-muted fw-semibold">Management</small>
           <div class="list-group list-group-flush mt-2">
             <%= link_to admin_users_path, class: "list-group-item list-group-item-action border-0 px-3 py-2 #{current_page?(admin_users_path) ? 'active' : ''}" do %>
             <i class="bi bi-people me-2"></i>Users
             <% end %>
-            
-            <%= link_to admin_user_blogs_path, class: "list-group-item list-group-item-action border-0 px-3 py-2" do %>
-              <i class="bi bi-file-text me-2"></i>Blogs
+            <%= link_to admin_blogs_path, class: "list-group-item list-group-item-action border-0 px-3 py-2 #{current_page?(admin_blogs_path) ? 'active' : ''}" do %>
+            <i class="bi bi-file-text me-2"></i>Blogs
             <% end %>
             <%= link_to '#', class: "list-group-item list-group-item-action border-0 px-3 py-2" do %>
             <i class="bi bi-chat-dots me-2"></i>Comments
             <% end %>
           </div>
-        </div> 
-<%
-=end%>
-        <div class="mb-4">
-  <small class="text-uppercase text-muted fw-semibold">Management</small>
-  <div class="list-group list-group-flush mt-2">
-    <%= link_to admin_users_path, class: "list-group-item list-group-item-action border-0 px-3 py-2 #{current_page?(admin_users_path) ? 'active' : ''}" do %>
-    <i class="bi bi-people me-2"></i>Users
-    <% end %>
-    <%= link_to admin_blogs_path, class: "list-group-item list-group-item-action border-0 px-3 py-2 #{current_page?(admin_blogs_path) ? 'active' : ''}" do %>
-    <i class="bi bi-file-text me-2"></i>Blogs
-    <% end %>
-    <%= link_to '#', class: "list-group-item list-group-item-action border-0 px-3 py-2" do %>
-    <i class="bi bi-chat-dots me-2"></i>Comments
-    <% end %>
-  </div>
-</div>
+        </div>
         <div class="mb-4">
           <small class="text-uppercase text-muted fw-semibold">Analytics</small>
           <div class="list-group list-group-flush mt-2">

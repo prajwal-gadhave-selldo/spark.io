@@ -1,0 +1,222 @@
+<div class="row">
+  <div class="col-12 mb-4">
+    <h1 class="h3">Activity</h1>
+    <p class="text-muted">Monitor site activity and engagement metrics</p>
+  </div>
+</div>
+
+<!-- Date Range Filter -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <div class="me-3 fw-semibold">Date Range:</div>
+          
+          <%= link_to admin_activity_path(range: '7_days'), class: "btn btn-sm #{@date_range == '7_days' ? 'btn-primary' : 'btn-outline-secondary'}" do %>
+            Last 7 Days
+          <% end %>
+          
+          <%= link_to admin_activity_path(range: '30_days'), class: "btn btn-sm #{@date_range == '30_days' ? 'btn-primary' : 'btn-outline-secondary'}" do %>
+            Last 30 Days
+          <% end %>
+          
+          <%= link_to admin_activity_path(range: '90_days'), class: "btn btn-sm #{@date_range == '90_days' ? 'btn-primary' : 'btn-outline-secondary'}" do %>
+            Last 90 Days
+          <% end %>
+          
+          <%= link_to admin_activity_path(range: 'year'), class: "btn btn-sm #{@date_range == 'year' ? 'btn-primary' : 'btn-outline-secondary'}" do %>
+            Last Year
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Activity Chart -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3">
+        <h5 class="mb-0">Daily Activity</h5>
+      </div>
+      <div class="card-body">
+        <canvas id="dailyActivityChart" height="300"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Most Active Users and Popular Content -->
+<div class="row">
+  <div class="col-lg-7 mb-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3">
+        <h5 class="mb-0">Most Active Users</h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">User</th>
+                <th scope="col" class="text-center">Blogs</th>
+                <th scope="col" class="text-center">Comments</th>
+                <th scope="col" class="text-center">Likes</th>
+                <th scope="col" class="text-center">Activity Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @active_users.each do |user| %>
+                <tr>
+                  <td>
+                    <%= link_to admin_user_path(user), class: "text-decoration-none" do %>
+                      <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                          <%= user.name[0].upcase %>
+                        </div>
+                        <div>
+                          <div class="fw-semibold"><%= user.name %></div>
+                          <div class="small text-muted"><%= user.email %></div>
+                        </div>
+                      </div>
+                    <% end %>
+                  </td>
+                  <td class="text-center"><%= user.blog_count %></td>
+                  <td class="text-center"><%= user.comment_count %></td>
+                  <td class="text-center"><%= user.like_count %></td>
+                  <td class="text-center">
+                    <div class="badge bg-primary rounded-pill">
+                      <%= user.blog_count.to_i + user.comment_count.to_i + user.like_count.to_i %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-lg-5 mb-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3">
+        <h5 class="mb-0">Popular Content</h5>
+      </div>
+      <div class="list-group list-group-flush">
+        <% @popular_blogs.each do |blog| %>
+          <%= link_to admin_blog_path(blog), class: "list-group-item list-group-item-action py-3" do %>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="fw-semibold"><%= blog.title %></div>
+                <div class="small text-muted">
+                  <i class="bi bi-clock me-1"></i>
+                  <%= blog.created_at.strftime("%b %d, %Y") %>
+                </div>
+              </div>
+              <div class="d-flex">
+                <div class="text-muted small me-3">
+                  <i class="bi bi-chat-dots me-1"></i>
+                  <%= blog.comment_count %>
+                </div>
+                <div class="text-muted small">
+                  <i class="bi bi-heart me-1"></i>
+                  <%= blog.like_count %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Daily Activity Chart
+    const dailyData = <%= raw @daily_data.to_json %>;
+    const dailyActivityCtx = document.getElementById('dailyActivityChart').getContext('2d');
+    
+    new Chart(dailyActivityCtx, {
+      type: 'line',
+      data: {
+        labels: dailyData.map(d => d.date),
+        datasets: [
+          {
+            label: 'Users',
+            data: dailyData.map(d => d.users),
+            borderColor: 'rgba(13, 110, 253, 1)',
+            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+            borderWidth: 2,
+            tension: 0.3,
+            fill: true
+          },
+          {
+            label: 'Blogs',
+            data: dailyData.map(d => d.blogs),
+            borderColor: 'rgba(13, 202, 240, 1)',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            tension: 0.3,
+            fill: false
+          },
+          {
+            label: 'Comments',
+            data: dailyData.map(d => d.comments),
+            borderColor: 'rgba(255, 193, 7, 1)',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            tension: 0.3,
+            fill: false
+          },
+          {
+            label: 'Likes',
+            data: dailyData.map(d => d.likes),
+            borderColor: 'rgba(220, 53, 69, 1)',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            tension: 0.3,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              drawBorder: false
+            },
+            ticks: {
+              precision: 0
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+  })
+
+  </script>
