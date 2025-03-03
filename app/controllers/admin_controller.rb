@@ -7,7 +7,6 @@ class AdminController < ApplicationController
   before_action :set_blog, only: [:show_blog, :edit_blog, :update_blog, :destroy_blog]
   layout "admin"
 
-  # Dashboard action
   def dashboard
     # Get counts for the dashboard cards
     @total_users = User.count
@@ -26,8 +25,7 @@ class AdminController < ApplicationController
         count: User.where("created_at <= ? AND created_at >= ?", month.end_of_month, month).count
       }
     end
-    
-    # Get data for content creation chart (last 12 months)
+
     @content_data = 12.downto(0).map do |i|
       month = i.months.ago.beginning_of_month
       {
@@ -37,16 +35,12 @@ class AdminController < ApplicationController
       }
     end
     
-    # Get latest user registrations
     @latest_users = User.order(created_at: :desc).limit(5)
     
-    # Get latest blogs
     @latest_blogs = Blog.includes(:user).order(created_at: :desc).limit(5)
   end
   
-  # Activity action
   def activity
-    # Date range for the activity
     @date_range = params[:range] || "30_days"
     
     case @date_range
@@ -62,7 +56,8 @@ class AdminController < ApplicationController
       @start_date = 30.days.ago
     end
     
-    # Daily activity counts
+
+    # By GPT
     @daily_data = (@start_date.to_date..Date.today).map do |date|
       next_date = date + 1.day
       {
@@ -73,8 +68,8 @@ class AdminController < ApplicationController
         likes: Like.where("created_at >= ? AND created_at < ?", date.beginning_of_day, next_date.beginning_of_day).count
       }
     end
-    
-    # Most active users
+
+    # By GPT
     @active_users = User
     .left_joins(:blogs, :comments, :likes)
     .where(
@@ -96,6 +91,7 @@ class AdminController < ApplicationController
     .order(Arel.sql("(COUNT(DISTINCT blogs.id) + COUNT(DISTINCT comments.id) + COUNT(DISTINCT likes.id)) DESC"))
     .limit(10)
 
+    # By GPT
     @popular_blogs = Blog
     .left_joins(:comments, :likes)
     .select(
@@ -111,7 +107,6 @@ class AdminController < ApplicationController
     .limit(5)
   end
 
-  # Users actions
   def users
     @users = User.all.order(created_at: :desc)
     
@@ -122,7 +117,6 @@ class AdminController < ApplicationController
     @users = @users.where(role: params[:role]) if params[:role].present?
     @users = @users.where(status: params[:status]) if params[:status].present?
     
-    # Filter by joined date
     case params[:joined]
     when "7_days"
       @users = @users.where("created_at >= ?", 7.days.ago)
@@ -134,15 +128,13 @@ class AdminController < ApplicationController
       @users = @users.where("created_at >= ?", 1.year.ago)
     end
     
-    # Handle search query
+
     if params[:search].present?
       @users = @users.where("name ILIKE :query OR email ILIKE :query", query: "%#{params[:search]}%")
     end
     
-    # Final order
     @users = @users.order(created_at: :desc)
     
-    # Add CSV export functionality
     respond_to do |format|
       format.html
       format.csv { send_data generate_users_csv(@users), filename: "users-#{Date.today}.csv" }
@@ -169,7 +161,6 @@ class AdminController < ApplicationController
     @likes = @user.likes.includes(:blog).order(created_at: :desc)
   end
 
-  # Blogs actions
   def blogs
     @blogs = Blog.includes(:user, :comments, :likes).order(created_at: :desc)
     
@@ -181,7 +172,6 @@ class AdminController < ApplicationController
     @blogs = @blogs.where(category: params[:category]) if params[:category].present?
     @blogs = @blogs.where(status: params[:status]) if params[:status].present?
     
-    # Filter by date range
     
     case params[:date_range]
     when "7_days"
@@ -200,7 +190,6 @@ class AdminController < ApplicationController
       @blogs = @blogs.where("title ILIKE :query OR content ILIKE :query", query: "%#{params[:search]}%")
     end
     
-    # Final order
     @blogs = @blogs.order(created_at: :desc)
     
     # Add CSV export functionality
