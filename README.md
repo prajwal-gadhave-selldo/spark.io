@@ -10,34 +10,24 @@
 
 ## Features
 
-- **User Authentication**: Sign up, log in.
-- **Blog Management**: Create, edit, and delete blog posts.
-- **User Interaction**: Like and comment on blogs.
-- **Admin Dashboard**: Manage users and monitor activity.
-- **Analytics & Activity Tracking**: Admins can view user activity and blog performance using **Chart.js**.
+- **🛡 User Authentication**: Sign up, log in.
+- **📝 Blog Management**: Create, edit, and delete blog posts.
+- **💬 User Interaction**: Like and comment on blogs.
+- **📊 Admin Dashboard**: Manage users and monitor activity.
+- **📈 Analytics & Activity Tracking**: Admins can view user activity and blog performance using **Chart.js**.
   - View user engagement metrics.
   - Track blog post performance.
   - Visualize activity trends with interactive charts.
-- **Responsive Design**: Works on both desktop and mobile.
-
-## Project Structure
-
-The project follows the MVC (Model-View-Controller) architecture.
-
-- **Controllers**: Handles requests and application logic.
-- **Models**: Manages data and database interactions.
-- **Views**: Defines UI components and layouts.
-- **Policies**: Implements authorization rules.
-- **Helpers**: Provides reusable methods for views and controllers.
+- **🎨 Responsive Design**: Works on both desktop and mobile.
 
 ## Tech Stack
 
-- **Backend**: Ruby on Rails
-- **Frontend**: HTML, CSS (Bootstrap), JavaScript.
-- **Database**: PostgreSQL
-- **Authentication**:  Custom JWT Based Authentication
-- **Authorization**: Pundit
-- **Charts & Analytics**: Chart.js
+- **🚀 Backend**: Ruby on Rails
+- **🌐 Frontend**: HTML, CSS (Bootstrap), JavaScript.
+- **🗄 Database**: PostgreSQL
+- **🔐 Authentication**:  Custom JWT Based Authentication
+- **🔏 Authorization**: Pundit
+- **📊 Charts & Analytics**: Chart.js
 
 ## Schema Design
 ![Database Schema](/public/er-diagram.png)
