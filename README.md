@@ -1,7 +1,7 @@
 <div align="center">
 
-# Spark io
-
+![Introduction Banner](/public/banner.png)
+# Spark IO - A Blogging Site
 </div>
 
 ## Overview
@@ -34,10 +34,9 @@
 
 
 ## Installation & Setup
-
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-repo/spark.io.git
+   git clone https://github.com/prajwal-gadhave-selldo/spark.io.git
    cd spark.io
    ```
 2. Install dependencies:
