@@ -18,10 +18,10 @@ class ApplicationController < ActionController::Base
       decoded_token = JWT.decode(token, "tempjwtsalt")[0] # Rails.application.credentials.secret_key_base``
       @current_user = User.find(decoded_token["id"])
 
-    rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
+    rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError, ActiveRecord::RecordNotFound => e
       # head :unauthorized
       # redirect_to login_path unless request.original_fullpath == login_path or request.original_fullpath == signup_path
-      redirect_to login_path unless [ login_path, signup_path ].include?(request.original_fullpath)
+      redirect_to login_path unless [ login_path, signup_path ].include?(request.original_fullpath), alert: "Please login first."
     end
   end
 

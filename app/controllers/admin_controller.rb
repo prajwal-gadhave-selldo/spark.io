@@ -236,7 +236,11 @@ class AdminController < ApplicationController
   private
 
   def set_user
+    begin
     @user = User.find(params[:id])
+    rescue ActiveRecord::RecordNotFound => e
+      redirect_to admin_users_path, alert: "User not found."
+    end
   end
 
   def set_blog
