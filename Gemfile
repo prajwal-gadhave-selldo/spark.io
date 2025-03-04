@@ -71,3 +71,6 @@ gem "pry"
 gem "pundit", "~> 2.4"
 
 gem "csv", "~> 3.3"
+
+gem "rspec-rails", "~> 7.1"
+gem "factory_bot_rails", "~> 6.4"

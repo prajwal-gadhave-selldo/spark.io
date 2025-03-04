@@ -1,10 +1,10 @@
-require 'csv'
+require "csv"
 
 class AdminController < ApplicationController
   before_action :authenticate_user
   before_action :authorize_admin
-  before_action :set_user, only: [:show_user, :edit_user, :update_user, :user_activity]
-  before_action :set_blog, only: [:show_blog, :edit_blog, :update_blog, :destroy_blog]
+  before_action :set_user, only: [ :show_user, :edit_user, :update_user, :user_activity ]
+  before_action :set_blog, only: [ :show_blog, :edit_blog, :update_blog, :destroy_blog ]
   layout "admin"
 
   def dashboard
@@ -13,10 +13,10 @@ class AdminController < ApplicationController
     @total_blogs = Blog.count
     @total_comments = Comment.count
     @total_likes = Like.count
-    
+
     # Get new users in the last 30 days
     @new_users_count = User.where("created_at >= ?", 30.days.ago).count
-    
+
     # Get data for user growth chart (last 12 months)
     @user_growth_data = 12.downto(0).map do |i|
       month = i.months.ago.beginning_of_month
@@ -34,15 +34,15 @@ class AdminController < ApplicationController
         comments: Comment.where("created_at <= ? AND created_at >= ?", month.end_of_month, month).count
       }
     end
-    
+
     @latest_users = User.order(created_at: :desc).limit(5)
-    
+
     @latest_blogs = Blog.includes(:user).order(created_at: :desc).limit(5)
   end
-  
+
   def activity
     @date_range = params[:range] || "30_days"
-    
+
     case @date_range
     when "7_days"
       @start_date = 7.days.ago
@@ -55,7 +55,7 @@ class AdminController < ApplicationController
     else
       @start_date = 30.days.ago
     end
-    
+
 
     # By GPT
     @daily_data = (@start_date.to_date..Date.today).map do |date|
@@ -73,18 +73,18 @@ class AdminController < ApplicationController
     @active_users = User
     .left_joins(:blogs, :comments, :likes)
     .where(
-      "blogs.created_at >= :start_date OR 
-       comments.created_at >= :start_date OR 
-       likes.created_at >= :start_date OR 
-       users.created_at >= :start_date", 
+      "blogs.created_at >= :start_date OR
+       comments.created_at >= :start_date OR
+       likes.created_at >= :start_date OR
+       users.created_at >= :start_date",
       start_date: @start_date
     )
     .select(
-      "users.id, 
-       users.name, 
-       users.email, 
-       COUNT(DISTINCT blogs.id) as blog_count, 
-       COUNT(DISTINCT comments.id) as comment_count, 
+      "users.id,
+       users.name,
+       users.email,
+       COUNT(DISTINCT blogs.id) as blog_count,
+       COUNT(DISTINCT comments.id) as comment_count,
        COUNT(DISTINCT likes.id) as like_count"
     )
     .group(:id, :name, :email)
@@ -95,10 +95,10 @@ class AdminController < ApplicationController
     @popular_blogs = Blog
     .left_joins(:comments, :likes)
     .select(
-      "blogs.id, 
-      blogs.title, 
-      blogs.created_at, 
-      COUNT(DISTINCT comments.id) as comment_count, 
+      "blogs.id,
+      blogs.title,
+      blogs.created_at,
+      COUNT(DISTINCT comments.id) as comment_count,
       COUNT(DISTINCT likes.id) as like_count"
     )
     .where("blogs.created_at >= ?", @start_date)
@@ -109,14 +109,14 @@ class AdminController < ApplicationController
 
   def users
     @users = User.all.order(created_at: :desc)
-    
+
     # Apply filters if present
     @users = @users.where("name ILIKE ?", "%#{params[:name]}%") if params[:name].present?
     @users = @users.where("email ILIKE ?", "%#{params[:email]}%") if params[:email].present?
-    
+
     @users = @users.where(role: params[:role]) if params[:role].present?
     @users = @users.where(status: params[:status]) if params[:status].present?
-    
+
     case params[:joined]
     when "7_days"
       @users = @users.where("created_at >= ?", 7.days.ago)
@@ -127,14 +127,14 @@ class AdminController < ApplicationController
     when "year"
       @users = @users.where("created_at >= ?", 1.year.ago)
     end
-    
+
 
     if params[:search].present?
       @users = @users.where("name ILIKE :query OR email ILIKE :query", query: "%#{params[:search]}%")
     end
-    
+
     @users = @users.order(created_at: :desc)
-    
+
     respond_to do |format|
       format.html
       format.csv { send_data generate_users_csv(@users), filename: "users-#{Date.today}.csv" }
@@ -163,16 +163,16 @@ class AdminController < ApplicationController
 
   def blogs
     @blogs = Blog.includes(:user, :comments, :likes).order(created_at: :desc)
-    
+
     # Apply filters if present
-    
+
     @blogs = @blogs.where("title ILIKE ?", "%#{params[:title]}%") if params[:title].present?
     @blogs = @blogs.joins(:user).where("users.name ILIKE ?", "%#{params[:author]}%") if params[:author].present?
-    
+
     @blogs = @blogs.where(category: params[:category]) if params[:category].present?
     @blogs = @blogs.where(status: params[:status]) if params[:status].present?
-    
-    
+
+
     case params[:date_range]
     when "7_days"
       @blogs = @blogs.where("blogs.created_at >= ?", 7.days.ago)
@@ -183,15 +183,15 @@ class AdminController < ApplicationController
     when "year"
       @blogs = @blogs.where("blogs.created_at >= ?", 1.year.ago)
     end
-    
-    
+
+
     # Handle search query
     if params[:search].present?
       @blogs = @blogs.where("title ILIKE :query OR content ILIKE :query", query: "%#{params[:search]}%")
     end
-    
+
     @blogs = @blogs.order(created_at: :desc)
-    
+
     # Add CSV export functionality
     respond_to do |format|
       format.html
@@ -262,29 +262,29 @@ class AdminController < ApplicationController
   end
 
   def generate_users_csv(users)
-    headers = ['ID', 'Name', 'Email', 'Role', 'Created At']
-    
+    headers = [ "ID", "Name", "Email", "Role", "Created At" ]
+
     CSV.generate(headers: true) do |csv|
       csv << headers
-      
+
       users.each do |user|
         csv << [
           user.id,
           user.name,
           user.email,
           user.role,
-          user.created_at.strftime('%Y-%m-%d %H:%M:%S')
+          user.created_at.strftime("%Y-%m-%d %H:%M:%S")
         ]
       end
     end
   end
 
   def generate_blogs_csv(blogs)
-    headers = ['ID', 'Title', 'Author', 'Comments', 'Likes', 'Created At']
-    
+    headers = [ "ID", "Title", "Author", "Comments", "Likes", "Created At" ]
+
     CSV.generate(headers: true) do |csv|
       csv << headers
-      
+
       blogs.each do |blog|
         csv << [
           blog.id,
@@ -292,7 +292,7 @@ class AdminController < ApplicationController
           blog.user.name,
           blog.comments.count,
           blog.likes.count,
-          blog.created_at.strftime('%Y-%m-%d %H:%M:%S')
+          blog.created_at.strftime("%Y-%m-%d %H:%M:%S")
         ]
       end
     end

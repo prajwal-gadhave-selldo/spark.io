@@ -58,7 +58,6 @@ class BlogsController < ApplicationController
     rescue ActiveRecord::RecordNotFound => e
       redirect_to root_path, alert: "Blog not found."
     end
-
   end
 
   def ensure_owner

@@ -4,8 +4,6 @@
 # Spark IO - A Blogging Site
 </div>
 
-## Overview
-
  **Spark io** is a web application designed for blogging and user interactions. It allows users to create, edit, and manage blogs while enabling comments and likes. The platform includes an admin panel for managing users and content.
 
 ## Features

@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
     rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError, ActiveRecord::RecordNotFound => e
       # head :unauthorized
       # redirect_to login_path unless request.original_fullpath == login_path or request.original_fullpath == signup_path
-      redirect_to login_path unless [ login_path, signup_path ].include?(request.original_fullpath), alert: "Please login first."
+      redirect_to login_path, alert: "Please login first." unless [ login_path, signup_path ].include?(request.original_fullpath)
     end
   end
 
