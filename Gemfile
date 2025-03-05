@@ -68,7 +68,7 @@ gem "bcrypt", "~> 3.1"
 
 gem "jwt", "~> 2.10"
 gem "pry"
-gem "pundit", "~> 2.4"
+gem "pundit", "~> 2.5"
 
 gem "csv", "~> 3.3"
 
