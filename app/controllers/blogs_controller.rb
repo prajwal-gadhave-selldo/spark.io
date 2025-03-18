@@ -5,13 +5,11 @@ class BlogsController < ApplicationController
 
   def index
     @current_user = current_user ? current_user : "guest"
-    # @blogs = Blog.includes(:user).order(created_at: :desc)
-    @blogs = current_user.blogs.includes(:user).order(created_at: :desc)
+    @blogs = current_user ? BlogsService.index(current_user) : Blog.includes(:user).order(created_at: :desc)
   end
 
   def show
     @current_user = current_user ? current_user : "guest"
-
     @comment = Comment.new
     @comments = @blog.comments.includes(:user).order(created_at: :desc)
   end
@@ -21,9 +19,10 @@ class BlogsController < ApplicationController
   end
 
   def create
-    @blog = current_user.blogs.build(blog_params)
+    result = BlogsService.create(current_user, blog_params)
+    @blog = result[:blog]
 
-    if @blog.save
+    if result[:success]
       redirect_to @blog, notice: "Blog was successfully created."
     else
       render :new, status: :unprocessable_entity
@@ -34,7 +33,10 @@ class BlogsController < ApplicationController
   end
 
   def update
-    if @blog.update(blog_params)
+    result = BlogsService.update(@blog, blog_params)
+    @blog = result[:blog]
+
+    if result[:success]
       redirect_to @blog, notice: "Blog was successfully updated."
     else
       render :edit, status: :unprocessable_entity
@@ -42,7 +44,7 @@ class BlogsController < ApplicationController
   end
 
   def destroy
-    @blog.destroy
+    BlogsService.destroy(@blog)
     redirect_to blogs_path, notice: "Blog was successfully deleted."
   end
 
@@ -53,15 +55,17 @@ class BlogsController < ApplicationController
   end
 
   def set_blog
-    begin
-    @blog = Blog.find(params[:id])
-    rescue ActiveRecord::RecordNotFound => e
-      redirect_to root_path, alert: "Blog not found."
+    result = BlogsService.fetch(params[:id])
+    
+    if result[:success]
+      @blog = result[:blog]
+    else
+      redirect_to root_path, alert: result[:error]
     end
   end
 
   def ensure_owner
-    unless @blog.user == current_user
+    unless BlogsService.owner?(@blog, current_user)
       redirect_to blogs_path, alert: "You are not authorized to perform this action."
     end
   end
