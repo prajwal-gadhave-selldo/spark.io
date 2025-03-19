@@ -1,6 +1,7 @@
 class Blog < ApplicationRecord
   # Validations
   validates :title, :content, :user_id, presence: true
+  validates :user_id, uniqueness: { scope: :title }
 
 
   # Associations
