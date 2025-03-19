@@ -30,7 +30,6 @@ class ApplicationController < ActionController::Base
   end
 
   def logged_in
-    binding.pry
     redirect_to root_path if current_user.present?
   end
 end
