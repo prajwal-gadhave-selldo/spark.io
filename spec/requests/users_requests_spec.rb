@@ -17,7 +17,8 @@ RSpec.describe "UsersController", type: :request do
 
     context 'when valid parameters are provided' do
       it 'create a new user and redirect to dashboard' do
-        post "/signup", params: params
+        post signup_path, params: params
+        binding.pry
         expect(response).to redirect_to(dashboard_path)
       end
     end

@@ -17,7 +17,7 @@ module SparkIo
     config.autoload_lib(ignore: %w[assets tasks])
     config.hosts << "e1e9-219-91-158-194.ngrok-free.app"
     config.hosts << "a8ec-219-91-158-194.ngrok-free.app"
-
+    config.hosts << "www.example.com"
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
