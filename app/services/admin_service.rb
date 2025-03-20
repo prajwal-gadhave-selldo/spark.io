@@ -144,7 +144,6 @@ class AdminService
     # Apply filters if present
     blogs = blogs.where("title ILIKE ?", "%#{params[:title]}%") if params[:title].present?
     blogs = blogs.joins(:user).where("users.name ILIKE ?", "%#{params[:author]}%") if params[:author].present?
-    blogs = blogs.where(category: params[:category]) if params[:category].present?
     blogs = blogs.where(status: params[:status]) if params[:status].present?
 
     case params[:date_range]

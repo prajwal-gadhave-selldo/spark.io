@@ -19,77 +19,77 @@
       </div>
       <div class="card-body">
         <%= form_with model: @blog, url: admin_blogs_path, local: true do |form| %>
-          <% if @blog.errors.any? %>
-            <div class="alert alert-danger">
-              <h6 class="alert-heading">Please fix the following errors:</h6>
-              <ul class="mb-0">
-                <% @blog.errors.full_messages.each do |message| %>
-                  <li><%= message %></li>
-                <% end %>
-              </ul>
-            </div>
-          <% end %>
-          
-          <div class="mb-3">
-            <%= form.label :title, class: "form-label" %>
-            <%= form.text_field :title, class: "form-control", placeholder: "Enter blog title" %>
-          </div>
-          
-          <div class="mb-3">
-            <%= form.label :content, class: "form-label" %>
-            <%= form.text_area :content, rows: 10, class: "form-control", placeholder: "Write your blog content here..." %>
-          </div>
-          
-          <% if Blog.column_names.include?('excerpt') || Blog.attribute_names.include?('excerpt') %>
-          <div class="mb-3">
-            <%= form.label :excerpt, "Excerpt (optional)", class: "form-label" %>
-            <%= form.text_area :excerpt, rows: 3, class: "form-control", placeholder: "A short summary of your blog" %>
-            <div class="form-text">This will be displayed in blog listings and social media shares.</div>
-          </div>
-          <% end %>
-          
-          <% if Blog.column_names.include?('category') || Blog.attribute_names.include?('category') %>
-          <div class="mb-3">
-            <%= form.label :category, class: "form-label" %>
-            <%= form.select :category, [
+        <% if @blog.errors.any? %>
+        <div class="alert alert-danger">
+          <h6 class="alert-heading">Please fix the following errors:</h6>
+          <ul class="mb-0">
+            <% @blog.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+        <% end %>
+
+        <div class="mb-3">
+          <%= form.label :title, class: "form-label" %>
+          <%= form.text_field :title, class: "form-control", placeholder: "Enter blog title" %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :content, class: "form-label" %>
+          <%= form.text_area :content, rows: 10, class: "form-control", placeholder: "Write your blog content here..." %>
+        </div>
+
+        <% if Blog.column_names.include?('excerpt') || Blog.attribute_names.include?('excerpt') %>
+        <div class="mb-3">
+          <%= form.label :excerpt, "Excerpt (optional)", class: "form-label" %>
+          <%= form.text_area :excerpt, rows: 3, class: "form-control", placeholder: "A short summary of your blog" %>
+          <div class="form-text">This will be displayed in blog listings and social media shares.</div>
+        </div>
+        <% end %>
+
+        <% if Blog.column_names.include?('category') || Blog.attribute_names.include?('category') %>
+        <div class="mb-3">
+          <%= form.label :category, class: "form-label" %>
+          <%= form.select :category, [
                 ["Technology", "technology"], 
                 ["Business", "business"], 
                 ["Lifestyle", "lifestyle"]
               ], 
               { include_blank: "Select a category" }, 
               { class: "form-select" } %>
-          </div>
-          <% end %>
-          
-          <% if Blog.column_names.include?('status') || Blog.attribute_names.include?('status') %>
-          <div class="mb-3">
-            <%= form.label :status, class: "form-label" %>
-            <%= form.select :status, [
+        </div>
+        <% end %>
+
+        <% if Blog.column_names.include?('status') || Blog.attribute_names.include?('status') %>
+        <div class="mb-3">
+          <%= form.label :status, class: "form-label" %>
+          <%= form.select :status, [
                 ["Published", "published"], 
                 ["Draft", "draft"], 
                 ["Archived", "archived"]
               ], 
               { selected: "draft" }, 
               { class: "form-select" } %>
-          </div>
-          <% end %>
-          
-          <% if Blog.column_names.include?('featured_image') || Blog.attribute_names.include?('featured_image') %>
-          <div class="mb-3">
-            <%= form.label :featured_image, class: "form-label" %>
-            <%= form.file_field :featured_image, class: "form-control" %>
-          </div>
-          <% end %>
-          
-          <div class="d-flex justify-content-end">
-            <%= link_to "Cancel", admin_blogs_path, class: "btn btn-light me-2" %>
-            <%= form.submit "Create Blog", class: "btn btn-primary" %>
-          </div>
+        </div>
+        <% end %>
+
+        <% if Blog.column_names.include?('featured_image') || Blog.attribute_names.include?('featured_image') %>
+        <div class="mb-3">
+          <%= form.label :featured_image, class: "form-label" %>
+          <%= form.file_field :featured_image, class: "form-control" %>
+        </div>
+        <% end %>
+
+        <div class="d-flex justify-content-end">
+          <%= link_to "Cancel", admin_blogs_path, class: "btn btn-light me-2" %>
+          <%= form.submit "Create Blog", class: "btn btn-primary" %>
+        </div>
         <% end %>
       </div>
     </div>
   </div>
-  
+
   <div class="col-lg-4">
     <div class="card border-0 shadow-sm mb-4">
       <div class="card-header bg-white">

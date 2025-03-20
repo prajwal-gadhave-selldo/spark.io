@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :blog do
-    title { "Test Blog" }
+    title { Faker::Lorem.sentence }  
     content { "Blog content" }
     association :user
   end

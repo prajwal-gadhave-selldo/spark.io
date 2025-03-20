@@ -19,36 +19,36 @@
       </div>
       <div class="card-body">
         <%= form_with model: @blog, url: admin_blog_path(@blog), method: :patch, local: true do |form| %>
-          <% if @blog.errors.any? %>
-            <div class="alert alert-danger">
-              <h6 class="alert-heading">Please fix the following errors:</h6>
-              <ul class="mb-0">
-                <% @blog.errors.full_messages.each do |message| %>
-                  <li><%= message %></li>
-                <% end %>
-              </ul>
-            </div>
-          <% end %>
-          
-          <div class="mb-3">
-            <%= form.label :title, class: "form-label" %>
-            <%= form.text_field :title, class: "form-control", placeholder: "Enter blog title" %>
-          </div>
-          
-          <div class="mb-3">
-            <%= form.label :content, class: "form-label" %>
-            <%= form.text_area :content, rows: 10, class: "form-control", placeholder: "Write your blog content here..." %>
-          </div>
-          
-          <div class="d-flex justify-content-end">
-            <%= link_to "Cancel", admin_blog_path(@blog), class: "btn btn-light me-2" %>
-            <%= form.submit "Update Blog", class: "btn btn-primary" %>
-          </div>
+        <% if @blog.errors.any? %>
+        <div class="alert alert-danger">
+          <h6 class="alert-heading">Please fix the following errors:</h6>
+          <ul class="mb-0">
+            <% @blog.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+        <% end %>
+
+        <div class="mb-3">
+          <%= form.label :title, class: "form-label" %>
+          <%= form.text_field :title, class: "form-control", placeholder: "Enter blog title" %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :content, class: "form-label" %>
+          <%= form.text_area :content, rows: 10, class: "form-control", placeholder: "Write your blog content here..." %>
+        </div>
+
+        <div class="d-flex justify-content-end">
+          <%= link_to "Cancel", admin_blog_path(@blog), class: "btn btn-light me-2" %>
+          <%= form.submit "Update Blog", class: "btn btn-primary" %>
+        </div>
         <% end %>
       </div>
     </div>
   </div>
-  
+
   <div class="col-lg-4">
     <div class="card border-0 shadow-sm mb-4">
       <div class="card-header bg-white">
@@ -64,17 +64,17 @@
             <span><%= @blog.user.name %></span>
           </div>
         </div>
-        
+
         <div class="mb-3">
           <label class="text-muted d-block">Created</label>
           <div><%= @blog.created_at.strftime("%B %d, %Y at %I:%M %p") %></div>
         </div>
-        
+
         <div class="mb-3">
           <label class="text-muted d-block">Last Updated</label>
           <div><%= @blog.updated_at.strftime("%B %d, %Y at %I:%M %p") %></div>
         </div>
-        
+
         <div class="mb-3">
           <label class="text-muted d-block">Statistics</label>
           <div class="d-flex">
@@ -90,7 +90,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="card border-0 shadow-sm mb-4">
       <div class="card-header bg-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Danger Zone</h5>
@@ -100,7 +100,7 @@
         <%= button_to admin_blog_path(@blog), method: :delete, 
             class: 'btn btn-outline-danger w-100',
             form: { data: { turbo_confirm: 'Are you sure? This will permanently delete this blog post and all associated comments.' } } do %>
-          <i class="bi bi-trash me-1"></i>Delete Blog
+        <i class="bi bi-trash me-1"></i>Delete Blog
         <% end %>
       </div>
     </div>
