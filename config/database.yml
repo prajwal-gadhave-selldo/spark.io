@@ -16,6 +16,7 @@ test:
   database: blogging_test
 
 production:
-  <<: *default
+  # <<: *default
+  adapter: postgresql
   database: blogging_prod
   url: <%= ENV["DATABASE_URL"] %>
