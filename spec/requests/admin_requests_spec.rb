@@ -18,7 +18,7 @@ RSpec.describe AdminController, type: :request do
         total_comments: 20,
         total_likes: 50,
         new_users_count: 2,
-        user_growth_data: [1, 2, 3],
+        user_growth_data: [ 1, 2, 3 ],
         content_data: { blogs: 5, comments: 20 },
         latest_users: [],
         latest_blogs: []
@@ -55,7 +55,7 @@ RSpec.describe AdminController, type: :request do
     let!(:user2) { FactoryBot.create(:user, email: "user2@gmail.com") }
 
     it "downloads CSV successfully" do
-      allow(AdminService).to receive(:filter_users).and_return([user1, user2])
+      allow(AdminService).to receive(:filter_users).and_return([ user1, user2 ])
       allow(AdminService).to receive(:generate_users_csv).and_return("id,name,email\n1,Test, test@example.com")
 
       get admin_users_path, params: { format: :csv }, headers: AuthHelper.authenticate(admin)
@@ -68,14 +68,14 @@ RSpec.describe AdminController, type: :request do
   describe "#update_user" do
     it "updates user details successfully" do
       updated_attributes = { name: "Updated Name", email: "updated@example.com" }
-    
+
       allow(AdminService).to receive(:update_user).with(user, ActionController::Parameters.new(updated_attributes).permit!).and_return({ success: true })
-    
+
       patch admin_user_path(user), params: { user: updated_attributes }, headers: AuthHelper.authenticate(admin)
-    
+
       expect(response).to redirect_to(admin_user_path(user))
     end
-  
+
     it "renders edit_user when update fails" do
       allow(AdminService).to receive(:update_user).and_return({ success: false, user: user })
 
@@ -86,9 +86,9 @@ RSpec.describe AdminController, type: :request do
 
     it "redirects when user is not found" do
       allow(User).to receive(:find_by).and_return(nil)
-  
+
       patch admin_user_path(-1), params: { user: { name: "Test" } }, headers: AuthHelper.authenticate(admin)
-  
+
       expect(response).to redirect_to(admin_users_path)
       expect(flash[:alert]).to eq("User not found.")
     end
@@ -97,7 +97,7 @@ RSpec.describe AdminController, type: :request do
   describe "#user_activity" do
     it "retrieves user activity data" do
       activity_data = {
-        blogs: [blog],
+        blogs: [ blog ],
         comments: [],
         likes: []
       }
@@ -107,7 +107,7 @@ RSpec.describe AdminController, type: :request do
       get admin_user_activity_path(user), headers: AuthHelper.authenticate(admin)
 
       expect(response).to have_http_status(:success)
-      expect(assigns(:blogs)).to eq([blog])
+      expect(assigns(:blogs)).to eq([ blog ])
     end
   end
 
@@ -116,7 +116,7 @@ RSpec.describe AdminController, type: :request do
     let!(:blog2) { FactoryBot.create(:blog, user: user_for_blog) }
 
     it "downloads blogs as CSV successfully" do
-      allow(AdminService).to receive(:filter_blogs).and_return([blog1, blog2])
+      allow(AdminService).to receive(:filter_blogs).and_return([ blog1, blog2 ])
       allow(AdminService).to receive(:generate_blogs_csv).and_return("id,title,content\n1,Title,Content")
 
       get admin_blogs_path, params: { format: :csv }, headers: AuthHelper.authenticate(admin)
@@ -149,7 +149,7 @@ RSpec.describe AdminController, type: :request do
 
     # it "renders new when blog initialization fails" do
     #   allow(Blog).to receive(:new).and_return(nil)
-  
+
     #   get new_admin_blog_path, headers: AuthHelper.authenticate(admin)
 
     # end
@@ -176,9 +176,9 @@ RSpec.describe AdminController, type: :request do
 
     it "redirects when blog is not found" do
       allow(Blog).to receive(:find_by).and_return(nil)
-  
+
       patch admin_blog_path(-1), params: { blog: { title: "Updated Title" } }, headers: AuthHelper.authenticate(admin)
-  
+
       expect(response).to redirect_to(admin_blogs_path)
       expect(flash[:alert]).to eq("Blog not found.")
     end
@@ -197,12 +197,11 @@ RSpec.describe AdminController, type: :request do
   describe "Admin authorization" do
     it "redirects non-admin users" do
       allow(AdminService).to receive(:is_admin?).and_return(false)
-  
+
       get admin_dashboard_path, headers: AuthHelper.authenticate(user)
-  
+
       expect(response).to redirect_to(root_path)
       expect(flash[:alert]).to eq("You are not authorized to access this area.")
     end
   end
-  
 end

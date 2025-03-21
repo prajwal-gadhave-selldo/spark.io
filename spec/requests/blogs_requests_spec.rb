@@ -56,7 +56,7 @@ RSpec.describe "BlogsController", type: :request do
       end
     end
   end
-  
+
   describe "#update" do
     let(:valid_params) do
       {

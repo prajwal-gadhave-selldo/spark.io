@@ -7,7 +7,7 @@ class AdminController < ApplicationController
 
   def dashboard
     dashboard_data = AdminService.dashboard_data
-    
+
     @total_users = dashboard_data[:total_users]
     @total_blogs = dashboard_data[:total_blogs]
     @total_comments = dashboard_data[:total_comments]
@@ -22,7 +22,7 @@ class AdminController < ApplicationController
   def activity
     @date_range = params[:range] || "30_days"
     activity_data = AdminService.activity_data(@date_range)
-    
+
     @start_date = activity_data[:start_date]
     @daily_data = activity_data[:daily_data]
     @active_users = activity_data[:active_users]
@@ -46,7 +46,7 @@ class AdminController < ApplicationController
 
   def update_user
     result = AdminService.update_user(@user, user_params)
-    
+
     if result[:success]
       redirect_to admin_user_path(@user), notice: "User was successfully updated."
     else
@@ -57,7 +57,7 @@ class AdminController < ApplicationController
 
   def user_activity
     activity_data = AdminService.user_activity(@user)
-    
+
     @blogs = activity_data[:blogs]
     @comments = activity_data[:comments]
     @likes = activity_data[:likes]
@@ -81,7 +81,7 @@ class AdminController < ApplicationController
 
   def create_blog
     result = AdminService.create_blog(blog_params, current_user)
-    
+
     if result[:success]
       redirect_to admin_blogs_path, notice: "Blog was successfully created."
     else
@@ -95,7 +95,7 @@ class AdminController < ApplicationController
 
   def update_blog
     result = AdminService.update_blog(@blog, blog_params)
-    
+
     if result[:success]
       redirect_to admin_blog_path(@blog), notice: "Blog was successfully updated."
     else
@@ -113,7 +113,7 @@ class AdminController < ApplicationController
 
   def set_user
     result = AdminService.find_user(params[:id])
-    
+
     if result[:success]
       @user = result[:user]
     else
@@ -123,7 +123,7 @@ class AdminController < ApplicationController
 
   def set_blog
     result = AdminService.find_blog(params[:id])
-    
+
     if result[:success]
       @blog = result[:blog]
     else

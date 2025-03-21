@@ -15,7 +15,7 @@ class BlogsService
 
   def self.create(user, blog_params)
     blog = user.blogs.build(blog_params)
-    
+
     if blog.save
       { blog: blog, success: true }
     else

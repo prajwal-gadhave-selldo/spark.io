@@ -55,7 +55,36 @@ describe AdminService do
 
   describe '.filter_users' do
     it 'filters users based on name' do
-      filtered_users = AdminService.filter_users(name: users.first.name)
+      filtered_users = AdminService.filter_users({ name: users.first.name })
+      expect(filtered_users).to include(users.first)
+    end
+
+    it 'filters users based on email' do
+      filtered_users = AdminService.filter_users(email: users.first.email)
+      expect(filtered_users).to include(users.first)
+    end
+
+    it 'filters users based on role' do
+      filtered_users = AdminService.filter_users(role: users.first.role)
+      expect(filtered_users).to include(users.first)
+    end
+
+    it "filters users based on joined date" do
+      filtered_users = AdminService.filter_users(joined: "7_days")
+      expect(filtered_users).to include(*users)
+
+      filtered_users = AdminService.filter_users(joined: "month")
+      expect(filtered_users).to include(*users)
+
+      filtered_users = AdminService.filter_users(joined: "3_months")
+      expect(filtered_users).to include(*users)
+
+      filtered_users = AdminService.filter_users(joined: "year")
+      expect(filtered_users).to include(*users)
+    end
+
+    it "filters users based on search query" do
+      filtered_users = AdminService.filter_users(search: users.first.name)
       expect(filtered_users).to include(users.first)
     end
   end
@@ -84,6 +113,11 @@ describe AdminService do
       filtered_blogs = AdminService.filter_blogs(date_range: "year")
       expect(filtered_blogs).to include(*blogs)
     end
+
+    it 'filters blogs based on search query' do
+      filtered_blogs = AdminService.filter_blogs(search: blogs.first.title)
+      expect(filtered_blogs).to include(blogs.first)
+    end
   end
 
   describe '.find_user' do
@@ -107,6 +141,67 @@ describe AdminService do
     end
   end
 
+  describe '.update_user' do
+    it 'updates user when valid params are provided' do
+      user_params = { name: "Updated Name" }
+      result = AdminService.update_user(users.first, user_params)
+      expect(result[:success]).to be true
+      expect(users.first.reload.name).to eq("Updated Name")
+    end
+
+    it 'returns error when invalid params are provided' do
+      user_params = { email: "" }
+      result = AdminService.update_user(users.first, user_params)
+      expect(result[:success]).to be false
+    end
+  end
+
+  describe '.create_blog' do
+    it 'creates a new blog when valid params are provided' do
+      blog_params = { title: "New Blog", content: "New Content" }
+      result = AdminService.create_blog(blog_params, users.first)
+      expect(result[:success]).to be true
+      expect(Blog.last.title).to eq("New Blog")
+    end
+
+    it 'returns error when invalid params are provided' do
+      blog_params = { title: "", content: "" }
+      result = AdminService.create_blog(blog_params, users.first)
+      expect(result[:success]).to be false
+    end
+  end
+
+  describe '.update_blog' do
+    it 'updates blog when valid params are provided' do
+      blog_params = { title: "Updated Title" }
+      result = AdminService.update_blog(blogs.first, blog_params)
+      expect(result[:success]).to be true
+      expect(blogs.first.reload.title).to eq("Updated Title")
+    end
+
+    it 'returns error when invalid params are provided' do
+      blog_params = { title: "" }
+      result = AdminService.update_blog(blogs.first, blog_params)
+      expect(result[:success]).to be false
+    end
+  end
+
+  describe '.destroy_blog' do
+    it 'deletes the blog' do
+      result = AdminService.destroy_blog(blogs.first)
+      expect(result[:success]).to be true
+    end
+  end
+
+  describe '.user_activity' do
+    it 'returns correct user activity data' do
+      data = AdminService.user_activity(users.first)
+      expect(data[:blogs].count).to eq(users.first.blogs.count)
+      expect(data[:comments].count).to eq(users.first.comments.count)
+      expect(data[:likes].count).to eq(users.first.likes.count)
+    end
+  end
+
   describe '.generate_users_csv' do
     it 'generates a valid CSV file' do
       csv_content = AdminService.generate_users_csv(users)
@@ -118,6 +213,18 @@ describe AdminService do
     it 'generates a valid CSV file' do
       csv_content = AdminService.generate_blogs_csv(blogs)
       expect(csv_content).to include("ID,Title,Author,Comments,Likes,Created At")
+    end
+  end
+
+  describe '.is_admin?' do
+    it 'returns true if user is admin' do
+      user = create(:user, role: "admin")
+      expect(AdminService.is_admin?(user)).to be true
+    end
+
+    it 'returns false if user is not admin' do
+      user = create(:user, role: "user")
+      expect(AdminService.is_admin?(user)).to be false
     end
   end
 end

@@ -16,9 +16,9 @@ RSpec.describe "Likes", type: :request do
 
       it "fails to like the blog if already liked" do
         FactoryBot.create(:like, user: user, blog: blog) # First like
-        
+
         post blog_likes_path(blog), headers: AuthHelper.authenticate(user) # Second like attempt
-  
+
         expect(response).to redirect_to(blog_path(blog))
         expect(blog.likes.count).to eq(1)
       end

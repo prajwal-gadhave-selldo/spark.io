@@ -56,7 +56,7 @@ class BlogsController < ApplicationController
 
   def set_blog
     result = BlogsService.fetch(params[:id])
-    
+
     if result[:success]
       @blog = result[:blog]
     else

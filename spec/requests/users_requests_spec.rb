@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "UsersController", type: :request do
-  
   describe '#signup' do
-
     let(:params) do
       {
         user: {
@@ -27,7 +25,6 @@ RSpec.describe "UsersController", type: :request do
     end
 
     context 'when invalid parameters are provided' do
-      
       it 'for does not create a new user and render new template' do
         post "/signup", params: { user: { name: 'Rushi' } }
         expect(response).to render_template(:new)
