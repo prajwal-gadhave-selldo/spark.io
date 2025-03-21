@@ -15,10 +15,5 @@ test:
   database: blogging_test
 
 production:
-  adapter: postgresql
   database: blogging_prod
-  url: <%= ENV["DATABASE_URL"] %>
-
-  cable:
-    adapter: postgresql
-    url: <%= ENV["DATABASE_URL"] %>
+  host: <%= ENV["DATABASE_URL"] %>
