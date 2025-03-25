@@ -19,6 +19,7 @@ module SparkIo
     config.hosts << "a8ec-219-91-158-194.ngrok-free.app"
     config.hosts << "www.example.com"
     config.hosts << "spark-blogs.onrender.com"
+    config.hosts << "43.204.116.71:3000"
     config.active_job.queue_adapter = :inline
 
     # Configuration for the application, engines, and railties goes here.
