@@ -17,7 +17,7 @@ set :identity_file, 'rails-server-key_pair.pem'
 set :ssh_options, '-i rails-server-key_pair.pem'
 set :deploy_to, '/var/www/spark.io'
 set :repository, 'https://github.com/prajwal-gadhave-selldo/spark.io.git'
-set :branch, 'main'
+set :branch, 'master'
 set :user, 'ec2-user'
 set :rvm_use_path, '/home/ec2-user/.rvm/scripts/rvm'
 
