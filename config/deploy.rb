@@ -51,7 +51,6 @@ task :setup do
   # command %{rbenv install 3.4.1 --skip-existing}
   # command %{rvm install ruby-2.5.3}
   # command %{gem install bundler}
-  command "export DATABASE_URL='ABC'"
 end
 
 desc 'Deploys the current version to the server.'
