@@ -43,6 +43,8 @@ Rails.application.configure do
   # Prevent health checks from clogging up the logs.
   config.silence_healthcheck_path = "/up"
 
+  config.force_ssl = true
+
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 

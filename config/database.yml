@@ -15,6 +15,10 @@ test:
   database: blogging_test
 
 # production:
+#   <<: *default
+#   database: blogging_prod
+
+# production:
 #   database: blogging_prod
 #   host: <%= ENV["DATABASE_URL"] %>
 
